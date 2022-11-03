@@ -36,11 +36,14 @@ view: transactions {
       week,
       month,
       quarter,
-      year
+      year,
+      month_name,
+
     ]
     convert_tz: no
     datatype: date
     sql: ${TABLE}.order_date ;;
+
   }
 
   dimension: product_code {
@@ -53,27 +56,51 @@ view: transactions {
     sql: ${TABLE}.sales_amount ;;
   }
 
+  dimension: sales_qty {
+    type: number
+    sql: ${TABLE}.sales_qty ;;
+  }
+
+
   # A measure is a field that uses a SQL aggregate function. Here are defined sum and average
   # measures for this dimension, but you can also add measures of many different aggregates.
   # Click on the type parameter to see all the options in the Quick Help panel on the right.
 
   measure: total_sales_amount {
+    label: "Total sales by label"
     type: sum
     sql: ${sales_amount} ;;
+    value_format_name: usd_0
+    drill_fields: [total_sales_qty,total_sales_amount]
+    html:
+    <a href="#drillmenu" target="_self">
+    {% if value > 5000000 %}
+    <span style="color:#42a338;">{{ rendered_value }}</span>
+    {% elsif value > 50000000 %}
+    <span style="color:#ffb92e;">{{ rendered_value }}</span>
+    {% else %}
+    <span style="color:#fa4444;">{{ rendered_value }}</span>
+    {% endif %}
+    </a>;;
   }
 
   measure: average_sales_amount {
     type: average
     sql: ${sales_amount} ;;
-  }
-
-  dimension: sales_qty {
-    type: number
-    sql: ${TABLE}.sales_qty ;;
+    value_format_name: usd_0
   }
 
   measure: count {
     type: count
     drill_fields: []
   }
+
+  measure: total_sales_qty {
+    type: sum
+    sql: ${sales_qty} ;;
+    value_format_name: decimal_0
+  }
+
+
+
 }

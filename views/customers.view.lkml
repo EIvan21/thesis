@@ -18,6 +18,7 @@ view: customers {
   dimension: customer_code {
     type: string
     sql: ${TABLE}.customer_code ;;
+    primary_key: yes
   }
 
   dimension: customer_type {

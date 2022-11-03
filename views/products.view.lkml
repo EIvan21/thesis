@@ -13,6 +13,7 @@ view: products {
   dimension: product_code {
     type: string
     sql: ${TABLE}.product_code ;;
+    primary_key: yes
   }
 
   dimension: product_type {
